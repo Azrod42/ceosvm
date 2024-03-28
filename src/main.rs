@@ -1,4 +1,5 @@
 use clap::Parser;
+mod auth;
 
 #[derive(Parser, Debug)]
 #[command()]
@@ -18,5 +19,6 @@ async fn main() -> Result<(), ()> {
     for _ in 0..args.count {
         println!("Hello {}!", args.list)
     }
+    let _ = auth::check_user_auth().await;
     Ok(())
 }
