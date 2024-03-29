@@ -1,24 +1,18 @@
 use clap::Parser;
+use structs::args::Args;
+
+use crate::parser::pars_args;
+mod api;
 mod auth;
-
-#[derive(Parser, Debug)]
-#[command()]
-struct Args {
-    #[arg(short, long, default_value_t = false)]
-    list: bool,
-
-    #[arg(short, long, default_value_t = 1)]
-    count: u8,
-}
+mod file;
+mod parser;
+mod structs;
+mod utils;
 
 #[tokio::main]
 async fn main() -> Result<(), ()> {
-    println!("Hello, world!");
     let args = Args::parse();
-
-    for _ in 0..args.count {
-        println!("Hello {}!", args.list)
-    }
-    let _ = auth::check_user_auth().await;
+    let auth_data = auth::get_auth_token().await.unwrap();
+    pars_args(args, auth_data);
     Ok(())
 }
