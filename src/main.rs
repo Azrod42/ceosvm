@@ -1,5 +1,5 @@
 use clap::Parser;
-use structs::args::Args;
+use structs::args::CliArgs;
 
 use crate::parser::pars_args;
 mod api;
@@ -9,10 +9,12 @@ mod parser;
 mod structs;
 mod utils;
 
+const BASE_URL: &'static str = "https://api.scmegahub.com/v1";
+
 #[tokio::main]
 async fn main() -> Result<(), ()> {
-    let args = Args::parse();
-    let auth_data = auth::get_auth_token().await.unwrap();
-    pars_args(args, auth_data);
+    let args = CliArgs::parse();
+    let auth_data = auth::get_auth_tokens(&args.remove_cache).await.unwrap();
+    pars_args(args, auth_data).await;
     Ok(())
 }
